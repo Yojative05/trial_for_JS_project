@@ -1,180 +1,153 @@
-// QUESTIONS
+//Creation Date: 7/10/2015
+//Description: This program provides a basic quiz application that enables individuals to
+//             create personality quiz websites with no javascript knowledge. All that is 
+//             needed is a basic understanding of HTML and some creativity. 
 
-const questions = [
-    {
-      "question": "Age range?",
-      "answer1": "under 18",
-      "answer1Total": "1",
-      "answer2": "18 - 30",
-      "answer2Total": "2",
-      "answer3": "over 30",
-      "answer3Total": "3"
-    },
-    {
-      "question": "I am very imaginative.",
-      "answer1": "Agree",
-      "answer1Total": "1",
-      "answer2": "Neutral",
-      "answer2Total": "2",
-      "answer3": "Disagree",
-      "answer3Total": "3"
-    },
-    {
-      "question":
-        "Select in which order you would value these \"Money, Love & Career",
-      "answer1": "Love, Career, Money",
-      "answer1Total": "1",
-      "answer2": "Money, Career, Love",
-      "answer2Total": "3",
-      "answer3": "Career, Love, Money",
-      "answer3Total": "2"
-    },
-    {
-      "question": "Best Sentence to describe you?",
-      "answer1": "You feel superior to other people.",
-      "answer1Total": "3",
-      "answer2": "You consider yourself more practical than creative.",
-      "answer2Total": "2",
-      "answer3":
-        "Winning a debate matters less to you than making sure no one gets upset.",
-      "answer3Total": "1"
-    },
-    {
-      "question": "Which best describes your relationship with food",
-      "answer1": "You tend to over-eat when you have company.",
-      "answer1Total": "1",
-      "answer2": "You tend to eat snacks secretly.",
-      "answer2Total": "2",
-      "answer3": "You prepare food and don\’t even look at the recipe.",
-      "answer3Total": "3"
-    },
-    {
-      "question":
-        "You make plans with a friend and they cancel on you, what do you do?",
-      "answer1":
-        "Say \"whatever\" and plan a night that'll be GREAT so they don't cancel again.",
-      "answer1Total": "3",
-      "answer2": "Feel hurt because you were looking forward to tonight.",
-      "answer2Total": "2",
-      "answer3": "No problem, you kinda wanted to stay home anyway.",
-      "answer3Total": "1"
-    },
-    {
-      "question": "Which of the following colours do you like most?",
-      "answer1": "Black",
-      "answer1Total": "1",
-      "answer2": "Yellow or light blue",
-      "answer2Total": "2",
-      "answer3": "Red or orange",
-      "answer3Total": "3"
+
+
+
+var currentQuestion = 2; //
+
+
+/* 
+	name: startQuiz
+	desc: Removes all elements that are not needed after the
+		   start of the quiz. 
+	parameters: none
+	returns: none
+*/
+function startQuiz() {
+        document.getElementById("lore_brief").className = "invisible";
+        document.getElementById("question-1").className = "question";
+        var startBtn = document.getElementById('startQuizBtn');
+        startBtn.parentNode.removeChild(startBtn);
     }
-  ]
-  
-  
-  let currentQuestion = 0;
-  let score = [];
-  let selectedAnswersData = [];
-  const totalQuestions =questions.length;
-  
-  const container = document.querySelector('.quiz-container');
-  const questionEl = document.querySelector('.question');
-  const option1 = document.querySelector('.option1');
-  const option2 = document.querySelector('.option2');
-  const option3 = document.querySelector('.option3');
-  const nextButton = document.querySelector('.next');
-  const previousButton = document.querySelector('.previous');
-  const restartButton = document.querySelector('.restart');
-  const result = document.querySelector('.result');
-  
-  //Function to generate question 
-  function generateQuestions (index) {
-      //Select each question by passing it a particular index
-      const question = questions[index];
-      const option1Total = questions[index].answer1Total;
-      const option2Total = questions[index].answer2Total;
-      const option3Total = questions[index].answer3Total;
-      //Populate html elements 
-      questionEl.innerHTML = `${index + 1}. ${question.question}`
-      option1.setAttribute('data-total', `${option1Total}`);
-      option2.setAttribute('data-total', `${option2Total}`);
-      option3.setAttribute('data-total', `${option3Total}`);
-      option1.innerHTML = `${question.answer1}`
-      option2.innerHTML = `${question.answer2}`
-      option3.innerHTML = `${question.answer3}`
-  }
-  
-  
-  function loadNextQuestion () {
-      const selectedOption = document.querySelector('input[type="radio"]:checked');
-      //Check if there is a radio input checked
-      if(!selectedOption) {
-          alert('Please select your answer!');
-          return;
-      }
-      //Get value of selected radio
-      const answerScore = Number(selectedOption.nextElementSibling.getAttribute('data-total'));
-  
-      ////Add the answer score to the score array
-      score.push(answerScore);
-  
-      selectedAnswersData.push()
-      
-  
-      const totalScore = score.reduce((total, currentNum) => total + currentNum);
-  
-      //Finally we incement the current question number ( to be used as the index for each array)
-      currentQuestion++;
-  
-          //once finished clear checked
-          selectedOption.checked = false;
-      //If quiz is on the final question
-      if(currentQuestion == totalQuestions - 1) {
-          nextButton.textContent = 'Finish';
-      }
-      //If the quiz is finished then we hide the questions container and show the results 
-      if(currentQuestion == totalQuestions) {
-          container.style.display = 'none';
-          result.innerHTML =
-           `<h1 class="final-score">Your score: ${totalScore}</h1>
-           <div class="summary">
-              <h1>Summary</h1>
-              <p>Possible - Personality Traits, see below for a summary based on your results:</p>
-              <p>15 - 21- You Need Help</p>
-              <p>10 - 15 - Good Soul</p>
-              <p>5 - 10 - Meh </p>
-              <p>5 - Are You Even Real</p>
-          </div>
-          <button class="restart">Restart Quiz</button>
-           `;
-          return;
-      }
-      generateQuestions(currentQuestion);
-  }
-  
-  //Function to load previous question
-  function loadPreviousQuestion() {
-      //Decrement quentions index
-      currentQuestion--;
-      //remove last array value;
-      score.pop();
-      //Generate the question
-      generateQuestions(currentQuestion);
-  }
-  
-  //Fuction to reset and restart the quiz;
-  function restartQuiz(e) {
-      if(e.target.matches('button')) {
-      //reset array index and score
-      currentQuestion = 0;
-      score = [];
-      //Reload quiz to the start
-      location.reload();
-      }
-  
-  }
-  
-  
-  generateQuestions(currentQuestion);
-  nextButton.addEventListener('click', loadNextQuestion);
-  previousButton.addEventListener('click',loadPreviousQuestion);
-  result.addEventListener('click',restartQuiz);
+	
+	
+	
+/* 
+	name: getNumberOfQuestions
+	desc: Used to dynamically get the  amount of questions 
+		  that have been created on the HTML page. 
+    parameters: none
+    returns: totalQuestions
+*/
+function getNumberOfQuestions() {
+        //QuerySelectorAll has better browser support in exchange for being slightly slower than gEBCN. 
+        var totalQuestions = document.querySelectorAll('#quiz-questions .question').length;
+        return totalQuestions;
+    }
+	
+	
+
+/* 
+	name: nextQuestion
+	desc: The primary tool for users to control their quiz position and 
+		  executes functions in a way that promotes separation of interests.
+    parameters: none
+    returns: none
+*/
+function nextQuestion() {
+        hideQuestion(currentQuestion);
+        hideAnswerButton();
+        showQuestion(currentQuestion);
+        currentQuestion++;
+    }
+	
+
+	
+/* 
+	name: setAnswerButton
+	desc: Sets the visibility of the button element required to 
+		  advance through questions to true. 
+    parameters: none
+    returns: none
+*/
+function setAnswerButton() {
+        //yes, that's correct. this is my lazy way of input validation without annoyning users 
+        //(e.g. transition on-click events) on the radio buttons...
+        document.getElementById("confirm_answer").className = "";
+    }
+
+
+
+/* 
+	name: hideAnswerButton
+	desc: Assigns an invisible class (display: none;) to the button element 
+		  required to advance through questions to true. 
+    parameters: none
+    returns: none
+*/
+function hideAnswerButton() {
+        document.getElementById("confirm_answer").className = "invisible";
+    }	
+	
+	
+
+/* 
+	name: hideQuestion
+	desc: Hides the the question that a user has completed so the space
+	can be swapped with another question. 
+    parameters: id
+    returns: none
+*/
+function hideQuestion(id) {
+        var totalQuestions = getNumberOfQuestions();
+        for (var i = 1; i <= totalQuestions; i++) {
+            if (i !== id) {
+                document.getElementById("question-" + i).className = "question invisible";
+            }
+        }
+    }
+
+
+	
+/* 
+	name: showQuestion
+	desc: Will identify current question using ID parameter and
+		  the invisible class free that have been created on the HTML page. 
+    parameters: id
+    returns: none
+*/
+function showQuestion(id) {
+        var totalQuestions = getNumberOfQuestions();
+        if (id <= totalQuestions) {
+            document.getElementById("question-" + id).className = "question";
+        } else {
+			setEndingSentence() //begins the end screen process if id is above total question
+        }
+    }
+
+
+
+/* 
+	name: getEndingSentence
+	desc: Handles calculations and provides the necessary information for 
+		  the quiz sentence genernation process to work. 
+    returns: content
+*/
+function getEndingSentence() {
+    var quizRadio = document.getElementsByName("rq");
+	var content = ''; //It's easier to handle if we simply merge all sentences into a string
+    for (var i = 0; i < quizRadio.length; i++) {
+        if (quizRadio[i].checked) {
+            content += quizRadio[i].getAttribute("data-endingsentence"); //these are the attributes used to generate quiz answers
+        }
+    }
+	return content;
+}
+
+
+
+/* 
+	name: setEndingSentence
+	desc: Collects information and outputs it to the HTML page.
+    parameters: none
+    returns: none
+*/
+function setEndingSentence() {
+	var personalityResults = getEndingSentence();
+    document.getElementById("results_screen").className = "";
+	document.getElementById("generated_text").innerHTML = personalityResults; 
+
+} 
